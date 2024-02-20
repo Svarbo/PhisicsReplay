@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,26 +6,23 @@ namespace Recording
     internal class RecordingUI : MonoBehaviour
     {
         [SerializeField] private Recorder _recorder;
-        [SerializeField] private Slider _timelineSlider;
+        [SerializeField] private TimelineSlider _timelineSlider;
         [SerializeField] private Button _stopRecordButton;
         [SerializeField] private Button _startPlayModeButton;
         [SerializeField] private Button _stopPlayModeButton;
 
-        private Coroutine _coroutine;
-        private WaitForSeconds _playbackDelay = new WaitForSeconds(0.01f);
+        private int _currentFrameNumber => (int)_timelineSlider.Slider.value;
 
         private void Awake()
         {
             _timelineSlider.gameObject.SetActive(false);
             _startPlayModeButton.gameObject.SetActive(false);
             _stopPlayModeButton.gameObject.SetActive(false);
-
-            _timelineSlider.wholeNumbers = true;
         }
 
         private void OnEnable()
         {
-            _timelineSlider.onValueChanged.AddListener(OnTimelineSliderValueChanged);
+            _timelineSlider.Slider.onValueChanged.AddListener(OnTimelineSliderValueChanged);
             _stopRecordButton.onClick.AddListener(OnStopRecordButtonClick);
             _startPlayModeButton.onClick.AddListener(OnStartPlayModeButtonClick);
             _stopPlayModeButton.onClick.AddListener(OnStopPlayModeButtonClick);
@@ -34,7 +30,7 @@ namespace Recording
 
         private void OnDisable()
         {
-            _timelineSlider.onValueChanged.RemoveListener(OnTimelineSliderValueChanged);
+            _timelineSlider.Slider.onValueChanged.RemoveListener(OnTimelineSliderValueChanged);
             _stopRecordButton.onClick.RemoveListener(OnStopRecordButtonClick);
             _startPlayModeButton.onClick.RemoveListener(OnStartPlayModeButtonClick);
             _stopPlayModeButton.onClick.RemoveListener(OnStopPlayModeButtonClick);
@@ -45,10 +41,10 @@ namespace Recording
 
         private void OnStopRecordButtonClick()
         {
-            _recorder.StopRecording();
-
             _startPlayModeButton.gameObject.SetActive(true);
             _stopRecordButton.gameObject.SetActive(false);
+
+            _recorder.StopRecording();
         }
 
         private void OnStartPlayModeButtonClick()
@@ -57,36 +53,19 @@ namespace Recording
             _timelineSlider.gameObject.SetActive(true);
             _stopPlayModeButton.gameObject.SetActive(true);
 
-            _timelineSlider.maxValue = _recorder.RecordedFramesCount - 1;
-
-            if (_coroutine != null)
-                StopCoroutine(_coroutine);
-
-            _coroutine = StartCoroutine(IncreaseSliderValue());
+            _timelineSlider.Slider.maxValue = _recorder.RecordedFramesCount - 1;
+            _timelineSlider.StartIncreaseCoroutine();
 
             _recorder.StopRecording();
         }
 
         private void OnStopPlayModeButtonClick()
         {
-            StopCoroutine(_coroutine);
-            _coroutine = null;
-
             _startPlayModeButton.gameObject.SetActive(true);
             _timelineSlider.gameObject.SetActive(false);
             _stopPlayModeButton.gameObject.SetActive(false);
 
-            _recorder.ContinueRecord();
-        }
-
-        private IEnumerator IncreaseSliderValue()
-        {
-            for (int i = 0; i <= _timelineSlider.maxValue; i++)
-            {
-                _timelineSlider.value = i;
-
-                yield return _playbackDelay;
-            }
+            _recorder.ContinueRecord(_currentFrameNumber);
         }
     }
 }

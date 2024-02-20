@@ -34,17 +34,26 @@ namespace Recording
                 recordingObject.SetPosition(frameNumber);
         }
 
-        internal void ContinueRecord()
+        internal void ContinueRecord(int frameNumber)
         {
             foreach (RecordingObject recordingObject in _recordingObjects)
             {
-                recordingObject.StartMoving();
+                RemoveUselessFrames(frameNumber);
 
-                recordingObject.SetPosition(RecordedFramesCount - 1);
-                recordingObject.DetermineVelocities(RecordedFramesCount - 1);
+                recordingObject.StartMoving();
+                recordingObject.SetPosition(frameNumber);
+                recordingObject.DetermineVelocities(frameNumber);
             }
 
             _isRecording = true;
+        }
+
+        private void RemoveUselessFrames(int currentFrameNumber)
+        {
+            int nextFrame = currentFrameNumber++;
+
+            foreach (RecordingObject recordingObject in _recordingObjects)
+                recordingObject.RemoveUselessFrames(currentFrameNumber);
         }
     }
 }

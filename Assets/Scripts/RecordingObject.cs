@@ -43,6 +43,19 @@ namespace Recording
             _rigidbody2D.angularVelocity = _angularVelocities[frameNumber];
         }
 
+        internal void RemoveUselessFrames(int firstUselessFrame)
+        {
+            int removingFramesCount = RecordedFramesCount - firstUselessFrame;
+
+            if (firstUselessFrame <= RecordedFramesCount)
+            {
+                _positions.RemoveRange(firstUselessFrame, removingFramesCount);
+                _eulerAngles.RemoveRange(firstUselessFrame, removingFramesCount);
+                _velocities.RemoveRange(firstUselessFrame, removingFramesCount);
+                _angularVelocities.RemoveRange(firstUselessFrame, removingFramesCount);
+            }
+        }
+
         internal void StartMoving() =>
             _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
 
