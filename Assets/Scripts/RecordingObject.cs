@@ -9,44 +9,39 @@ namespace Recording
     {
         private Transform _transform;
         private Rigidbody2D _rigidbody2D;
-        private Vector3 _currentPosition;
-        private Quaternion _currentRotation;
-        private List<float> _xCoordinates = new List<float>();
-        private List<float> _yCoordinates = new List<float>();
-        private List<float> _zRotationValues = new List<float>();
+        private List<Vector2> _positions = new List<Vector2>();
+        private List<Vector3> _eulerAngles = new List<Vector3>();
         private List<Vector2> _velocities = new List<Vector2>();
+        private List<float> _angularVelocities = new List<float>();
 
-        internal int RecordedFramesCount => _xCoordinates.Count;
+        internal int RecordedFramesCount => _positions.Count;
 
         private void Awake()
         {
             _transform = GetComponent<Transform>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-
-            _currentPosition = transform.position;
-            _currentRotation = transform.rotation;
         }
 
         internal void RecordNewFrame()
         {
-            _xCoordinates.Add(_transform.position.x);
-            _yCoordinates.Add(_transform.position.y);
-            _zRotationValues.Add(_transform.rotation.z);
+            _positions.Add(_transform.position);
+            _eulerAngles.Add(_transform.eulerAngles);
+
             _velocities.Add(_rigidbody2D.velocity);
+            _angularVelocities.Add(_rigidbody2D.angularVelocity);
         }
 
         internal void SetPosition(int frameNumber)
         {
-            _currentPosition.x = _xCoordinates[frameNumber];
-            _currentPosition.y = _yCoordinates[frameNumber];
-            _currentRotation.z = _zRotationValues[frameNumber];
-
-            _transform.position = _currentPosition;
-            _transform.rotation = _currentRotation;
+            _transform.eulerAngles = _eulerAngles[frameNumber];
+            _transform.position = _positions[frameNumber];
         }
 
-        internal void DetermineVelocity(int frameNumber) =>
+        internal void DetermineVelocities(int frameNumber)
+        {
             _rigidbody2D.velocity = _velocities[frameNumber];
+            _rigidbody2D.angularVelocity = _angularVelocities[frameNumber];
+        }
 
         internal void StartMoving() =>
             _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;

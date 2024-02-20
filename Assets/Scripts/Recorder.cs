@@ -7,13 +7,13 @@ namespace Recording
     {
         [SerializeField] private List<RecordingObject> _recordingObjects = new List<RecordingObject>();
 
-        public bool IsRecording { get; private set; } = true;
+        private bool _isRecording = true;
 
         public int RecordedFramesCount => _recordingObjects[0].RecordedFramesCount;
 
         private void FixedUpdate()
         {
-            if (IsRecording)
+            if (_isRecording)
             {
                 foreach (RecordingObject recordingObject in _recordingObjects)
                     recordingObject.RecordNewFrame();
@@ -25,7 +25,7 @@ namespace Recording
             foreach (RecordingObject recordingObject in _recordingObjects)
                 recordingObject.StopMoving();
 
-            IsRecording = false;
+            _isRecording = false;
         }
 
         internal void SetRecordingObjectsPositions(int frameNumber)
@@ -41,10 +41,10 @@ namespace Recording
                 recordingObject.StartMoving();
 
                 recordingObject.SetPosition(RecordedFramesCount - 1);
-                recordingObject.DetermineVelocity(RecordedFramesCount - 1);
+                recordingObject.DetermineVelocities(RecordedFramesCount - 1);
             }
 
-            IsRecording = true;
+            _isRecording = true;
         }
     }
 }

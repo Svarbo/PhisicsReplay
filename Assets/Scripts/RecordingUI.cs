@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Recording
 {
-    public class RecordingUI : MonoBehaviour
+    internal class RecordingUI : MonoBehaviour
     {
         [SerializeField] private Recorder _recorder;
         [SerializeField] private Slider _timelineSlider;
