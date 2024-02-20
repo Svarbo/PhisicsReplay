@@ -8,7 +8,7 @@ namespace Recording
     [RequireComponent(typeof(Slider))]
     internal class TimelineSlider : MonoBehaviour, IPointerDownHandler
     {
-        public Slider Slider { get; private set; }
+        internal Slider Slider { get; private set; }
 
         private Coroutine _coroutine;
         private WaitForSeconds _playbackDelay = new WaitForSeconds(0.01f);

@@ -9,7 +9,7 @@ namespace Recording
 
         private bool _isRecording = true;
 
-        public int RecordedFramesCount => _recordingObjects[0].RecordedFramesCount;
+        internal int RecordedFramesCount => _recordingObjects[0].RecordedFramesCount;
 
         private void FixedUpdate()
         {
