@@ -55,13 +55,11 @@ namespace Recording
 
             _timelineSlider.Slider.maxValue = _recorder.RecordedFramesCount - 1;
             _timelineSlider.StartIncreaseCoroutine();
-
-            _recorder.StopRecording();
         }
 
         private void OnStopPlayModeButtonClick()
         {
-            _startPlayModeButton.gameObject.SetActive(true);
+            _stopRecordButton.gameObject.SetActive(true);
             _timelineSlider.gameObject.SetActive(false);
             _stopPlayModeButton.gameObject.SetActive(false);
 

@@ -50,10 +50,10 @@ namespace Recording
 
         private void RemoveUselessFrames(int currentFrameNumber)
         {
-            int nextFrame = currentFrameNumber++;
+            int nextFrame = ++currentFrameNumber;
 
             foreach (RecordingObject recordingObject in _recordingObjects)
-                recordingObject.RemoveUselessFrames(currentFrameNumber);
+                recordingObject.RemoveUselessFrames(nextFrame);
         }
     }
 }
